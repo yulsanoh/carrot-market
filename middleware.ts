@@ -13,18 +13,15 @@ const publicOnlyUrls:IUrls = {
 }
 
 export async function middleware(request: NextRequest) {
-    // const pathname = request.nextUrl.pathname
-    // if(pathname === "/profile") {
-    //     return NextResponse.redirect(new URL("/", request.url));
-    // }
-    const session = await getSession();
-    const exists = publicOnlyUrls[request.nextUrl.pathname];
-    if(!session.id) {
-        if(!exists) {
-            return NextResponse.redirect(new URL("/", request.url))
-        }
-    } else {
-        return NextResponse.redirect(new URL("/product", request.url))
+    const isPublicPath = publicOnlyUrls[request.nextUrl.pathname]
+    const isLoggedIn = Boolean((await getSession()).id);
+
+    if(!isPublicPath && !isLoggedIn) {
+        return NextResponse.redirect(new URL("/", request.url))
+    }
+
+    if(isPublicPath && isLoggedIn) {
+        return NextResponse.redirect(new URL("/profile", request.url))
     }
 }
 

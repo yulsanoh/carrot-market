@@ -10,26 +10,30 @@ const getUser = async () => {
         id: session.id,
       },
     });
+
     if (user) {
       return user;
     }
   }
+
   notFound();
 };
 
-export default async function Profile() {
+export default async function Product() {
   const user = await getUser();
   const logOut = async () => {
     "use server";
+
     const session = await getSession();
-    session.destroy();
+    await session.destroy();
     redirect("/");
   };
+
   return (
     <div>
-      <h1>Welcome to {user?.username}</h1>
+      <h1>Hello {user.username}</h1>
       <form action={logOut}>
-        <button>Log Out</button>
+        <button>Sign Out</button>
       </form>
     </div>
   );
